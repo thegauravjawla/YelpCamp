@@ -5,6 +5,7 @@ var mongoose    = require("mongoose");
 var Campground  = require("./models/campground");
 var Comment     = require("./models/comment");
 var seedDB      = require("./seeds");
+var flash       = require("connect-flash");
 var passport    = require("passport");
 var User        = require("./models/user");
 var LocalStrategy = require("passport-local");
@@ -22,6 +23,7 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 mongoose.set('useFindAndModify', false);
+app.use(flash());
 
 
 // seedDB(); //seed the database
@@ -43,6 +45,8 @@ passport.deserializeUser(User.deserializeUser());
 app.use(function(req, res, next){
     // whatever is in res.locals is available to us in all templates
     res.locals.currentUser = req.user;
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success");
     next();
 });
 
